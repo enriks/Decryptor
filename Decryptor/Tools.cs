@@ -13,49 +13,49 @@ namespace Decryptor
         public List<string> counter(int part1, int part2, int part3,string texto1,string texto2,string texto3,string partkey)
         {
             List<string> combinaciones = new List<string>();
-           while(part1 <= 0xFF && part2 < 0xFF)//&& part2 <= 0xFF && part3 <= 0xFF
+           while(part1 <= 0xFF && part2 <= 0xFF && part3 < 0xFF)//&& part2 <= 0xFF && part3 <= 0xFF
             {
                 if (part1 < 0xFF)
                 {
                     part1++;
                     texto1 = string.Format("{0:X2}", part1);
                     Console.WriteLine(texto1 + texto2 + texto3);
-                    combinaciones.Add(TryDecrypt(partkey + texto1 + texto2 + texto3));
+                    combinaciones.Add(texto1 + texto2 + texto3 + " - " + TryDecrypt(partkey + texto1 + texto2 + texto3));
                 }
                 else
                 {
                     part1 = 00;
                     texto1 = string.Format("{0:X2}", part1);
                     Console.WriteLine(texto1 + texto2 + texto3);
-                    combinaciones.Add(TryDecrypt(partkey + texto1 + texto2 + texto3));
+                    combinaciones.Add(texto1 + texto2 + texto3 + " - " + TryDecrypt(partkey + texto1 + texto2 + texto3));
                     if (part2 < 0xFF)
                     {
                         part2++;
                         texto2 = string.Format("{0:X2}", part2);
                         Console.WriteLine(texto1 + texto2 + texto3);
-                        combinaciones.Add(TryDecrypt(partkey + texto1 + texto2 + texto3));
-                    }/*
+                        combinaciones.Add(texto1 + texto2 + texto3 + " - " + TryDecrypt(partkey + texto1 + texto2 + texto3));
+                    }
                    else
                     {
                         part2 = 00;
                         texto2 = string.Format("{0:X2}", part2);
                         Console.WriteLine(texto1 + texto2 + texto3);
-                        combinaciones.Add( TryDecrypt(partkey + texto1 + texto2 + texto3));
+                        combinaciones.Add(texto1 + texto2 + texto3 + " - " + TryDecrypt(partkey + texto1 + texto2 + texto3));
                         if (part3 < 0xFF)
                         {
                             part3++;
                             texto3 = string.Format("{0:X2}", part3);
                             Console.WriteLine(texto1 + texto2 + texto3);
-                            combinaciones.Add( TryDecrypt(partkey + texto1 + texto2 + texto3));
+                            combinaciones.Add(texto1 + texto2 + texto3 + " - " + TryDecrypt(partkey + texto1 + texto2 + texto3));
                         }
                         else
                         {
                             part3 = 00;
                             texto3 = string.Format("{0:X2}", part3);
                             Console.WriteLine(texto1 + texto2 + texto3);
-                            combinaciones.Add( TryDecrypt(partkey + texto1 + texto2 + texto3));
+                            combinaciones.Add(texto1 + texto2 + texto3 + " - " + TryDecrypt(partkey + texto1 + texto2 + texto3));
                         }
-                    }*/
+                    }
                 }
             }
             return combinaciones;
@@ -66,17 +66,42 @@ namespace Decryptor
         {
             string encripted = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory+@"\resources\DOCUMENTO1.dat");
             //Console.WriteLine(encripted);
-            byte[] key = StringToByteArray(keys);
+            byte[] key;
+            using (var hashmd5 = new MD5CryptoServiceProvider())
+            {
+                key = hashmd5.ComputeHash(Encoding.UTF8.GetBytes(keys));
+            }
+
             byte[] data = Convert.FromBase64String(encripted);
-            byte[] enc = new byte[0];
+            //byte[] enc;
+            using (var tdes = new TripleDESCryptoServiceProvider
+            {
+                Key = key,
+                Mode = CipherMode.ECB,
+                Padding = PaddingMode.PKCS7
+            })
+            using (var transform = tdes.CreateDecryptor())
+            {
+                try
+                {
+                    var resultArray = transform.TransformFinalBlock(data, 0, data.Length);
+
+                    // return the Clear decrypted TEXT
+                    return System.Text.ASCIIEncoding.ASCII.GetString(Convert.FromBase64String(System.Text.ASCIIEncoding.ASCII.GetString(resultArray)));//Encoding.UTF8.GetString(resultArray)
+                }
+                catch (Exception)
+                {
+                    return string.Empty;
+                }
+            }/*
             TripleDES tdes = TripleDES.Create();
             tdes.Key = key;
             tdes.Mode = CipherMode.ECB;
-            tdes.Padding = PaddingMode.Zeros;
+            tdes.Padding = PaddingMode.PKCS7;
             ICryptoTransform ict = tdes.CreateDecryptor();
             enc = ict.TransformFinalBlock(data, 0, data.Length);
             Console.WriteLine( Encoding.ASCII.GetString(enc));
-            return Encoding.ASCII.GetString(enc);
+            return System.Text.ASCIIEncoding.ASCII.GetString(Convert.FromBase64String(System.Text.ASCIIEncoding.ASCII.GetString(enc)));*/
         }
 
         public static string Base64Decode(string base64EncodedData)
