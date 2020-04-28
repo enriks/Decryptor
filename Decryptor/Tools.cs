@@ -87,10 +87,11 @@ namespace Decryptor
                     var resultArray = transform.TransformFinalBlock(data, 0, data.Length);
 
                     // return the Clear decrypted TEXT
-                    return System.Text.ASCIIEncoding.ASCII.GetString(Convert.FromBase64String(System.Text.ASCIIEncoding.ASCII.GetString(resultArray)));//Encoding.UTF8.GetString(resultArray)
+                    return Encoding.UTF8.GetString(resultArray, 0, resultArray.Length);//Encoding.UTF8.GetString(resultArray)
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
+                    Console.Error.WriteLine(e.Message);
                     return string.Empty;
                 }
             }/*
