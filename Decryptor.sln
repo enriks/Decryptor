@@ -5,6 +5,10 @@ VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Decryptor", "Decryptor\Decryptor.csproj", "{3EE7A19E-8FF3-49A5-86D7-7C985649FED8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ManejarDecriptedText", "ManejarDecriptedText\ManejarDecriptedText.csproj", "{5937B081-0679-4ADD-98B0-7B02AC6EC9E9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Decryptor2ElectricBogaloo", "Decryptor2ElectricBogaloo\Decryptor2ElectricBogaloo.csproj", "{C175324B-A8B7-4467-B6A8-C50EF441BF50}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{3EE7A19E-8FF3-49A5-86D7-7C985649FED8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3EE7A19E-8FF3-49A5-86D7-7C985649FED8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3EE7A19E-8FF3-49A5-86D7-7C985649FED8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5937B081-0679-4ADD-98B0-7B02AC6EC9E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5937B081-0679-4ADD-98B0-7B02AC6EC9E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5937B081-0679-4ADD-98B0-7B02AC6EC9E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5937B081-0679-4ADD-98B0-7B02AC6EC9E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C175324B-A8B7-4467-B6A8-C50EF441BF50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C175324B-A8B7-4467-B6A8-C50EF441BF50}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C175324B-A8B7-4467-B6A8-C50EF441BF50}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C175324B-A8B7-4467-B6A8-C50EF441BF50}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
