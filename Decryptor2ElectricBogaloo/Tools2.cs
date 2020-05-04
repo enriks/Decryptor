@@ -12,13 +12,13 @@ namespace Decryptor2ElectricBogaloo
     {
         public static string Decrypt(string text, string xml)
         {
-            byte[] encrypted = Convert.FromBase64String(text);
-            RSACryptoServiceProvider RSA = new RSACryptoServiceProvider(515);
+            byte[] encrypted = Convert.FromBase64String(text);//toma el texto a desencriptar y lo combierte a bytes de base64
+            RSACryptoServiceProvider RSA = new RSACryptoServiceProvider(515);//crea el proveedor de servicio RSA con un tamaño de 515 bits como indicaba el texto desencriptado
 
-            RSA.FromXmlString(xml);
+            RSA.FromXmlString(xml);//lee de la clave en el xml
             
-            Console.WriteLine(UTF8Encoding.UTF8.GetString(RSA.Decrypt(encrypted,false)));
-            return UTF8Encoding.UTF8.GetString(RSA.Decrypt(encrypted, false));
+            Console.WriteLine(UTF8Encoding.UTF8.GetString(RSA.Decrypt(encrypted,false)));//escribe el texto desencriptado
+            return UTF8Encoding.UTF8.GetString(RSA.Decrypt(encrypted, false));//devuelve el texto desencriptado
 
         }
     }
