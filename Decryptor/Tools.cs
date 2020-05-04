@@ -10,7 +10,7 @@ namespace Decryptor
 {
     public class Tools
     {
-        public static List<string> counter(int part1, int part2, int part3,string texto1,string texto2,string texto3,string partkey)//funcion contadora
+        public static List<string> counter(int part1, int part2, int part3,string texto1,string texto2,string texto3,string partkey, string encripted)//funcion contadora
         {
             List<string> combinaciones = new List<string>();//creacion de la lista que guardara las combianaciones y los resultados
            while(part1 <= 0xFF && part2 <= 0xFF && part3 < 0xFF)//contador que llegara hasta FFFFFF
@@ -20,40 +20,40 @@ namespace Decryptor
                     part1++;//si los primeros 2 digitos son menores a FF suma uno a los 2 digitos
                     texto1 = string.Format("{0:X2}", part1);//aplica formato haxadecimal al numero sumado
                     Console.WriteLine(texto1 + texto2 + texto3);//imprime la combinacion acutal
-                    combinaciones.Add(texto1 + texto2 + texto3 + " - " + TryDecrypt(partkey + texto1 + texto2 + texto3));//intenta desencriptar la combinacion y la agrega a la lista
+                    combinaciones.Add(texto1 + texto2 + texto3 + " - " + TryDecrypt(partkey + texto1 + texto2 + texto3,encripted));//intenta desencriptar la combinacion y la agrega a la lista
                 }
                 else
                 {
                     part1 = 00;// si los primeros 2 digitos son mayores a FF los vuelve a 00
                     texto1 = string.Format("{0:X2}", part1);//aplica formato haxadecimal al numero sumado
                     Console.WriteLine(texto1 + texto2 + texto3);//imprime la combinacion acutal
-                    combinaciones.Add(texto1 + texto2 + texto3 + " - " + TryDecrypt(partkey + texto1 + texto2 + texto3));//intenta desencriptar la combinacion y la agrega a la lista
+                    combinaciones.Add(texto1 + texto2 + texto3 + " - " + TryDecrypt(partkey + texto1 + texto2 + texto3,encripted));//intenta desencriptar la combinacion y la agrega a la lista
                     if (part2 < 0xFF)
                     {
                         part2++;//si es menor a FF suma uno a los segundos 2 digitos
                         texto2 = string.Format("{0:X2}", part2);//aplica formato haxadecimal al numero sumado
                         Console.WriteLine(texto1 + texto2 + texto3);//imprime la combinacion acutal
-                        combinaciones.Add(texto1 + texto2 + texto3 + " - " + TryDecrypt(partkey + texto1 + texto2 + texto3));//intenta desencriptar la combinacion y la agrega a la lista
+                        combinaciones.Add(texto1 + texto2 + texto3 + " - " + TryDecrypt(partkey + texto1 + texto2 + texto3,encripted));//intenta desencriptar la combinacion y la agrega a la lista
                     }
                    else
                     {
                         part2 = 00;//si los segundos 2 digitos son mayores a FF los vuelve a 00
                         texto2 = string.Format("{0:X2}", part2);//aplica formato haxadecimal al numero sumado
                         Console.WriteLine(texto1 + texto2 + texto3);//imprime la combinacion acutal
-                        combinaciones.Add(texto1 + texto2 + texto3 + " - " + TryDecrypt(partkey + texto1 + texto2 + texto3));//intenta desencriptar la combinacion y la agrega a la lista
+                        combinaciones.Add(texto1 + texto2 + texto3 + " - " + TryDecrypt(partkey + texto1 + texto2 + texto3,encripted));//intenta desencriptar la combinacion y la agrega a la lista
                         if (part3 < 0xFF)
                         {
                             part3++;//si es menor a FF suma uno a los terceros 2 digitos
                             texto3 = string.Format("{0:X2}", part3);//aplica formato haxadecimal al numero sumado
                             Console.WriteLine(texto1 + texto2 + texto3);//imprime la combinacion acutal
-                            combinaciones.Add(texto1 + texto2 + texto3 + " - " + TryDecrypt(partkey + texto1 + texto2 + texto3));//intenta desencriptar la combinacion y la agrega a la lista
+                            combinaciones.Add(texto1 + texto2 + texto3 + " - " + TryDecrypt(partkey + texto1 + texto2 + texto3,encripted));//intenta desencriptar la combinacion y la agrega a la lista
                         }
                         else
                         {
                             part3 = 00;//si los terceros 2 digitos son mayores a FF los vuelve a 00
                             texto3 = string.Format("{0:X2}", part3);//aplica formato haxadecimal al numero sumado
                             Console.WriteLine(texto1 + texto2 + texto3);//imprime la combinacion acutal
-                            combinaciones.Add(texto1 + texto2 + texto3 + " - " + TryDecrypt(partkey + texto1 + texto2 + texto3));//intenta desencriptar la combinacion y la agrega a la lista
+                            combinaciones.Add(texto1 + texto2 + texto3 + " - " + TryDecrypt(partkey + texto1 + texto2 + texto3,encripted));//intenta desencriptar la combinacion y la agrega a la lista
                         }
                     }
                 }
@@ -63,9 +63,9 @@ namespace Decryptor
         }
 
 
-        public static string TryDecrypt(string keys)//funcion que hace la desencriptacion
+        public static string TryDecrypt(string keys, string text)//funcion que hace la desencriptacion
         {
-            string encripted = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + @"\resources\DOCUMENTO1.dat");//toma el archivo que intenta desencriptar
+            string encripted = text;//toma el archivo que intenta desencriptar
             byte[] key;//variable que sera la llave que usara el 3DES
             using (var hashmd5 = new MD5CryptoServiceProvider())
             {
@@ -127,6 +127,30 @@ namespace Decryptor
             {
                 Console.WriteLine(Ex.ToString());//escribe si se encontro un error
             }
+        }
+
+        public static void getDecriptedText(string nombreArchivo)
+        {
+            List<string> encripted = File.ReadLines(Path.GetDirectoryName(Path.GetDirectoryName(Path.GetDirectoryName(System.IO.Directory.GetCurrentDirectory()))) + @"\Decryptor\bin\debug\resources\"+nombreArchivo+".txt").ToList();// lee el archivo desencriptado
+
+            List<string> noVacios = new List<string>();//lista que guardara los resultados que no tuvieron error al momento de desencriptar
+            List<string> desencriptado = new List<string>();//lista con el resultado de la desenciptacion
+            encripted.ForEach(lineas => {
+                if (!(lineas.ToCharArray().Length == 9))
+                {//saca los vacios
+                    noVacios.Add(lineas);//agrega los no vacios a la lista
+                }
+            });
+            noVacios.ForEach(novacios =>
+            {
+                if (!novacios.Contains("�") && novacios.ToCharArray().Length > 25)//busca un mensaje que no tenga � y que sea lo suficientemente largo como para ser el desencriptado
+                {
+                    Console.WriteLine(novacios);//imprime los que no tienen �
+                    desencriptado.Add(novacios);//agrega a la lista los resultados que no tienen �
+                }
+            });
+            Tools.CreateFile(desencriptado, nombreArchivo+"Decripted");//crea el archivo
+            Console.ReadLine();
         }
     }
 }
